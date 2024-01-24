@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>DFA/NFA checker</title>
+    <meta charset="UTF-8">
+    <style>
+        .mono {
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+<h1>Finite Automata and Formal Languages</h1>
+
+<h4>Validate your DFA here:</h4>
+<label>
+    <textarea id="check-dfa" class="mono" rows="10">
+       a  b  c
+→ * s₀ s₁ s₀ s₂
+    s₁ s₂ s₁ s₁
+  * s₂ s₂ s₂ s₂
+    </textarea>
+</label>
+<br>
+<button id="check-dfa-btn">Check!</button>
+<br>
+<span id="check-dfa-result"></span>
+<br>
+<p id="check-dfa-out" class="mono"></p>
+
+<br>
+
+<h4>Validate your NFA here:</h4>
+<label>
+    <textarea id="check-nfa" class="mono" rows="10">
+     a    b    c
+→ s₀ {s₀} {s₁} {s₀ s₂}
+  s₁ {}   {s₃} {s₂}
+  s₂ {}   {s₁} {s₄}
+  s₃ {s₄} {}   {s₃}
+* s₄ {}   {s₄} {}
+    </textarea>
+</label>
+<br>
+<button id="check-nfa-btn">Check!</button>
+<br>
+<span id="check-nfa-result"></span>
+<br>
+<p id="check-nfa-out" class="mono"></p>
+
+<script type="module">
+    // noinspection JSFileReferences
+    import init, {check_dfa, check_nfa} from "./web_bindings/bindings.js"
+
+    async function run() {
+        await init();
+        document.getElementById("check-dfa-btn").onclick = checkDfa;
+        document.getElementById("check-nfa-btn").onclick = checkNfa;
+    }
+
+    function checkDfa() {
+        try {
+            check_dfa(document.getElementById("check-dfa").value);
+            document.getElementById("check-dfa-out").innerText = "";
+            document.getElementById("check-dfa-result").innerText = "Valid!";
+            document.getElementById("check-dfa-result").style.color = "green"
+        } catch (e) {
+            document.getElementById("check-dfa-out").innerText = e;
+            document.getElementById("check-dfa-result").innerText = "Invalid!";
+            document.getElementById("check-dfa-result").style.color = "red"
+        }
+    }
+
+    function checkNfa() {
+        try {
+            check_nfa(document.getElementById("check-nfa").value);
+            document.getElementById("check-nfa-out").innerText = "";
+            document.getElementById("check-nfa-result").innerText = "Valid!";
+            document.getElementById("check-nfa-result").style.color = "green"
+        } catch (e) {
+            document.getElementById("check-nfa-out").innerText = e;
+            document.getElementById("check-nfa-result").innerText = "Invalid!";
+            document.getElementById("check-nfa-result").style.color = "red"
+        }
+    }
+
+    run();
+</script>
+
+</body>
+</html>
