@@ -2,6 +2,7 @@ use dandy::dfa::Dfa;
 use dandy::dfa::parse::DfaParseError;
 use dandy::nfa::Nfa;
 use dandy::nfa::parse::NfaParseError;
+use dandy::parser::regex;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
@@ -20,4 +21,9 @@ pub fn check_nfa(input: &str) -> Result<(), String> {
         .try_into()
         .map_err(|e: NfaParseError| e.to_string())?;
     Ok(())
+}
+
+#[wasm_bindgen]
+pub fn check_regex(input: &str) -> Result<(), String> {
+    regex(input).map(|_| ()).map_err(|e| format!("Error parsing regex: {e:?}"))
 }

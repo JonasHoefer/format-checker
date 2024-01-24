@@ -14,7 +14,7 @@
 
 <h4>Validate your DFA here:</h4>
 <label>
-    <textarea id="check-dfa" class="mono" rows="10">
+    <textarea id="check-dfa" class="mono" rows="10" cols="30">
        a  b  c
 → * s₀ s₁ s₀ s₂
     s₁ s₂ s₁ s₁
@@ -32,7 +32,7 @@
 
 <h4>Validate your NFA here:</h4>
 <label>
-    <textarea id="check-nfa" class="mono" rows="10">
+    <textarea id="check-nfa" class="mono" rows="10" cols="30">
      a    b    c
 → s₀ {s₀} {s₁} {s₀ s₂}
   s₁ {}   {s₃} {s₂}
@@ -48,14 +48,30 @@
 <br>
 <p id="check-nfa-out" class="mono"></p>
 
+<br>
+
+<h4>Validate your regular expression here:</h4>
+<label>
+    <textarea id="check-regex" class="mono" rows="1" cols="30">
+(ab)+(c|d)*bb+
+    </textarea>
+</label>
+<br>
+<button id="check-regex-btn">Check!</button>
+<br>
+<span id="check-regex-result"></span>
+<br>
+<p id="check-regex-out" class="mono"></p>
+
 <script type="module">
     // noinspection JSFileReferences
-    import init, {check_dfa, check_nfa} from "./web_bindings/bindings.js"
+    import init, {check_dfa, check_nfa, check_regex} from "./web_bindings/bindings.js"
 
     async function run() {
         await init();
         document.getElementById("check-dfa-btn").onclick = checkDfa;
         document.getElementById("check-nfa-btn").onclick = checkNfa;
+        document.getElementById("check-regex-btn").onclick = checkRegex;
     }
 
     function checkDfa() {
@@ -81,6 +97,19 @@
             document.getElementById("check-nfa-out").innerText = e;
             document.getElementById("check-nfa-result").innerText = "Invalid!";
             document.getElementById("check-nfa-result").style.color = "red"
+        }
+    }
+
+    function checkRegex() {
+        try {
+            check_regex(document.getElementById("check-regex").value);
+            document.getElementById("check-regex-out").innerText = "";
+            document.getElementById("check-regex-result").innerText = "Valid!";
+            document.getElementById("check-regex-result").style.color = "green"
+        } catch (e) {
+            document.getElementById("check-regex-out").innerText = e;
+            document.getElementById("check-regex-result").innerText = "Invalid!";
+            document.getElementById("check-regex-result").style.color = "red"
         }
     }
 
