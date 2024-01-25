@@ -1,120 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <title>DFA/NFA checker</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         .mono {
             font-family: monospace;
+            font-size: 80%;
+        }
+
+        button {
+            max-width: 200px;
         }
     </style>
+    <link rel="stylesheet" href="pico.classless.min.css">
 </head>
 <body>
-<h1>Finite Automata and Formal Languages</h1>
+<main style="max-width: 800px">
+    <hgroup>
+        <h1>Finite Automata and Formal Languages</h1>
+        <p>Validator for the text formats used in the course</p>
+    </hgroup>
 
-<h4>Validate your DFA here:</h4>
-<label>
-    <textarea id="check-dfa" class="mono" rows="10" cols="30">
+    <h3>Validate your DFA here:</h3>
+    <label>
+    <textarea id="check-dfa" class="mono" rows="8">
        a  b  c
 → * s₀ s₁ s₀ s₂
     s₁ s₂ s₁ s₁
-  * s₂ s₂ s₂ s₂
-    </textarea>
-</label>
-<br>
-<button id="check-dfa-btn">Check!</button>
-<br>
-<span id="check-dfa-result"></span>
-<br>
-<p id="check-dfa-out" class="mono"></p>
+  * s₂ s₂ s₂ s₂</textarea>
+    </label>
+    <button id="check-dfa-btn" aria-busy="true">Loading...</button>
+    <span id="check-dfa-result"></span>
+    <p id="check-dfa-out" class="mono"></p>
 
-<br>
-
-<h4>Validate your NFA here:</h4>
-<label>
-    <textarea id="check-nfa" class="mono" rows="10" cols="30">
+    <h3>Validate your NFA or ε-NFA here:</h3>
+    <label>
+    <textarea id="check-nfa" class="mono" rows="8">
      a    b    c
 → s₀ {s₀} {s₁} {s₀ s₂}
   s₁ {}   {s₃} {s₂}
   s₂ {}   {s₁} {s₄}
   s₃ {s₄} {}   {s₃}
-* s₄ {}   {s₄} {}
-    </textarea>
-</label>
-<br>
-<button id="check-nfa-btn">Check!</button>
-<br>
-<span id="check-nfa-result"></span>
-<br>
-<p id="check-nfa-out" class="mono"></p>
+* s₄ {}   {s₄} {}</textarea>
+    </label>
+    <button id="check-nfa-btn" aria-busy="true">Loading...</button>
+    <span id="check-nfa-result"></span>
+    <p id="check-nfa-out" class="mono"></p>
 
-<br>
+    <h3>Validate your regular expression here:</h3>
+    <label>
+        <input type="text" id="check-regex" class="mono" value="(ab)+(c|d)*bb+"/>
+    </label>
+    <button id="check-regex-btn" aria-busy="true">Loading...</button>
+    <span id="check-regex-result"></span>
+    <p id="check-regex-out" class="mono"></p>
 
-<h4>Validate your regular expression here:</h4>
-<label>
-    <textarea id="check-regex" class="mono" rows="1" cols="30">
-(ab)+(c|d)*bb+
-    </textarea>
-</label>
-<br>
-<button id="check-regex-btn">Check!</button>
-<br>
-<span id="check-regex-result"></span>
-<br>
-<p id="check-regex-out" class="mono"></p>
+    <script type="module">
+        // noinspection JSFileReferences
+        import init, {check_dfa, check_nfa, check_regex} from "./web_bindings/bindings.js"
 
-<script type="module">
-    // noinspection JSFileReferences
-    import init, {check_dfa, check_nfa, check_regex} from "./web_bindings/bindings.js"
+        const green = "#388e3c";
+        const red = "#b71c1c";
 
-    async function run() {
-        await init();
-        document.getElementById("check-dfa-btn").onclick = checkDfa;
-        document.getElementById("check-nfa-btn").onclick = checkNfa;
-        document.getElementById("check-regex-btn").onclick = checkRegex;
-    }
-
-    function checkDfa() {
-        try {
-            check_dfa(document.getElementById("check-dfa").value);
-            document.getElementById("check-dfa-out").innerText = "";
-            document.getElementById("check-dfa-result").innerText = "Valid!";
-            document.getElementById("check-dfa-result").style.color = "green"
-        } catch (e) {
-            document.getElementById("check-dfa-out").innerText = e;
-            document.getElementById("check-dfa-result").innerText = "Invalid!";
-            document.getElementById("check-dfa-result").style.color = "red"
+        async function run() {
+            await init();
+            document.querySelectorAll("button").forEach(button => {
+                button.innerText = "Check!";
+                button.removeAttribute("aria-busy");
+            });
+            document.getElementById("check-dfa-btn").onclick = checkDfa;
+            document.getElementById("check-nfa-btn").onclick = checkNfa;
+            document.getElementById("check-regex-btn").onclick = checkRegex;
         }
-    }
 
-    function checkNfa() {
-        try {
-            check_nfa(document.getElementById("check-nfa").value);
-            document.getElementById("check-nfa-out").innerText = "";
-            document.getElementById("check-nfa-result").innerText = "Valid!";
-            document.getElementById("check-nfa-result").style.color = "green"
-        } catch (e) {
-            document.getElementById("check-nfa-out").innerText = e;
-            document.getElementById("check-nfa-result").innerText = "Invalid!";
-            document.getElementById("check-nfa-result").style.color = "red"
+        function checkDfa() {
+            try {
+                check_dfa(document.getElementById("check-dfa").value);
+                document.getElementById("check-dfa").setAttribute("aria-invalid", "false");
+                document.getElementById("check-dfa-out").innerText = "";
+                document.getElementById("check-dfa-result").innerText = "Valid!";
+                document.getElementById("check-dfa-result").style.color = green;
+            } catch (e) {
+                document.getElementById("check-dfa").setAttribute("aria-invalid", "true");
+                document.getElementById("check-dfa-out").innerText = e;
+                document.getElementById("check-dfa-result").innerText = "Invalid!";
+                document.getElementById("check-dfa-result").style.color = red;
+            }
         }
-    }
 
-    function checkRegex() {
-        try {
-            check_regex(document.getElementById("check-regex").value);
-            document.getElementById("check-regex-out").innerText = "";
-            document.getElementById("check-regex-result").innerText = "Valid!";
-            document.getElementById("check-regex-result").style.color = "green"
-        } catch (e) {
-            document.getElementById("check-regex-out").innerText = e;
-            document.getElementById("check-regex-result").innerText = "Invalid!";
-            document.getElementById("check-regex-result").style.color = "red"
+        function checkNfa() {
+            try {
+                check_nfa(document.getElementById("check-nfa").value);
+                document.getElementById("check-nfa").setAttribute("aria-invalid", "false");
+                document.getElementById("check-nfa-out").innerText = "";
+                document.getElementById("check-nfa-result").innerText = "Valid!";
+                document.getElementById("check-nfa-result").style.color = green;
+            } catch (e) {
+                document.getElementById("check-nfa").setAttribute("aria-invalid", "true");
+                document.getElementById("check-nfa-out").innerText = e;
+                document.getElementById("check-nfa-result").innerText = "Invalid!";
+                document.getElementById("check-nfa-result").style.color = red;
+            }
         }
-    }
 
-    run();
-</script>
+        function checkRegex() {
+            try {
+                check_regex(document.getElementById("check-regex").value);
+                document.getElementById("check-regex").setAttribute("aria-invalid", "false");
+                document.getElementById("check-regex-out").innerText = "";
+                document.getElementById("check-regex-result").innerText = "Valid!";
+                document.getElementById("check-regex-result").style.color = green;
+            } catch (e) {
+                document.getElementById("check-regex").setAttribute("aria-invalid", "true");
+                document.getElementById("check-regex-out").innerText = e;
+                document.getElementById("check-regex-result").innerText = "Invalid!";
+                document.getElementById("check-regex-result").style.color = red;
+            }
+        }
 
+        run();
+    </script>
+</main>
 </body>
 </html>
