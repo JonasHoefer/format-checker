@@ -73,6 +73,11 @@
             document.getElementById("check-dfa-btn").onclick = checkDfa;
             document.getElementById("check-nfa-btn").onclick = checkNfa;
             document.getElementById("check-regex-btn").onclick = checkRegex;
+            document.getElementById("check-regex").addEventListener("keypress", event => {
+                if (event.key === "Enter") {
+                    checkRegex()
+                }
+            });
         }
 
         function checkDfa() {
