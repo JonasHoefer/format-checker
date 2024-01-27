@@ -13,6 +13,9 @@
         button {
             max-width: 200px;
         }
+
+	.check-button {}
+	.upload-button {}
     </style>
     <link rel="stylesheet" href="pico.classless.min.css">
 </head>
@@ -31,7 +34,11 @@
     s₁ s₂ s₁ s₁
   * s₂ s₂ s₂ s₂</textarea>
     </label>
-    <button id="check-dfa-btn" aria-busy="true">Loading...</button>
+    <div style="display: flex; justify-content: space-between;">
+        <button id="check-dfa-btn" aria-busy="true" class="check-button">Loading...</button>
+        <button onclick="document.getElementById('check-dfa-upld').click()" class="upload-button" aria-busy="true">Loading...</button>
+        <input type="file" id="check-dfa-upld" style="display: none;"/>
+    </div>
     <span id="check-dfa-result"></span>
     <p id="check-dfa-out" class="mono"></p>
 
@@ -45,7 +52,11 @@
   s₃ {s₄} {}   {s₃}
 * s₄ {}   {s₄} {}</textarea>
     </label>
-    <button id="check-nfa-btn" aria-busy="true">Loading...</button>
+    <div style="display: flex; justify-content: space-between;">
+        <button id="check-nfa-btn" aria-busy="true" class="check-button">Loading...</button>
+        <button onclick="document.getElementById('check-nfa-upld').click()" class="upload-button" aria-busy="true">Loading...</button>
+        <input type="file" id="check-nfa-upld" style="display: none;"/>
+    </div>
     <span id="check-nfa-result"></span>
     <p id="check-nfa-out" class="mono"></p>
 
@@ -53,7 +64,7 @@
     <label>
         <input type="text" id="check-regex" class="mono" value="(ab)+(c|d)*bb+"/>
     </label>
-    <button id="check-regex-btn" aria-busy="true">Loading...</button>
+    <button id="check-regex-btn" aria-busy="true" class="check-button">Loading...</button>
     <span id="check-regex-result"></span>
     <p id="check-regex-out" class="mono"></p>
 
@@ -66,10 +77,16 @@
 
         async function run() {
             await init();
-            document.querySelectorAll("button").forEach(button => {
+            document.querySelectorAll(".check-button").forEach(button => {
                 button.innerText = "Check!";
                 button.removeAttribute("aria-busy");
             });
+
+            document.querySelectorAll(".upload-button").forEach(button => {
+                button.innerText = "Upload File";
+                button.removeAttribute("aria-busy");
+            });
+
             document.getElementById("check-dfa-btn").onclick = checkDfa;
             document.getElementById("check-nfa-btn").onclick = checkNfa;
             document.getElementById("check-regex-btn").onclick = checkRegex;
@@ -78,6 +95,16 @@
                     checkRegex()
                 }
             });
+
+	    document.getElementById("check-dfa-upld").onchange = () => uploadFile("check-dfa-upld", "check-dfa");
+	    document.getElementById("check-nfa-upld").onchange = () => uploadFile("check-nfa-upld", "check-nfa");
+        }
+
+        function uploadFile(input, textarea) {
+	    var file = document.getElementById(input).files[0];
+            var reader = new FileReader();
+	    reader.readAsText(file, "UTF-8")
+	    reader.onload = (e) => { document.getElementById(textarea).innerText = e.target.result };
         }
 
         function checkDfa() {
