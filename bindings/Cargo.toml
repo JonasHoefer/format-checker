@@ -7,5 +7,5 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-dandy = "0.1.5"
+dandy = "0.1.7"
 wasm-bindgen = "0.2.90"
