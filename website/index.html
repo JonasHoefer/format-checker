@@ -101,8 +101,8 @@
         }
 
         function uploadFile(input, textarea) {
-            var file = document.getElementById(input).files[0];
-            var reader = new FileReader();
+            const file = document.getElementById(input).files[0];
+            const reader = new FileReader();
             reader.readAsText(file, "UTF-8")
             reader.onload = (e) => { document.getElementById(textarea).value = e.target.result };
         }
