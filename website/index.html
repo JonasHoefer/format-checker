@@ -64,7 +64,11 @@
     <label>
         <input type="text" id="check-regex" class="mono" value="(ab)+(c|d)*bb+"/>
     </label>
-    <button id="check-regex-btn" aria-busy="true" class="check-button">Loading...</button>
+    <div style="display: flex; justify-content: space-between;">
+        <button id="check-regex-btn" aria-busy="true" class="check-button">Loading...</button>
+        <button onclick="document.getElementById('check-regex-upld').click()" class="upload-button" aria-busy="true">Loading...</button>
+        <input type="file" id="check-regex-upld" style="display: none;"/>
+    </div>
     <span id="check-regex-result"></span>
     <p id="check-regex-out" class="mono"></p>
 
@@ -98,6 +102,7 @@
 
             document.getElementById("check-dfa-upld").onchange = () => uploadFile("check-dfa-upld", "check-dfa");
             document.getElementById("check-nfa-upld").onchange = () => uploadFile("check-nfa-upld", "check-nfa");
+            document.getElementById("check-regex-upld").onchange = () => uploadFile("check-regex-upld", "check-regex");
         }
 
         function uploadFile(input, textarea) {
